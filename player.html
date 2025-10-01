@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visor de Enlaces Seguro</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #f0f0f0;
+    }
+    .container {
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+    }
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: 1px solid #ccc;
+      margin-top: 20px;
+      background-color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Visor de Enlaces Seguro</h2>
+    <iframe id="linkFrame" sandbox="allow-same-origin allow-scripts"></iframe>
+  </div>
+
+  <script>
+    // Función para obtener parámetros de la URL
+    function getParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    const iframe = document.getElementById('linkFrame');
+    const link = getParam("url");
+
+    if (link && /^https?:\/\//i.test(link)) {
+      iframe.src = link;
+    } else {
+      document.body.innerHTML = "<h3 style='color:red;text-align:center;'>⚠️ Enlace no válido o faltante.</h3>";
+    }
+  </script>
+</body>
+</html>
