@@ -30,21 +30,19 @@
 <body>
   <div class="container">
     <h2>Visor de Enlaces Seguro</h2>
-    <!-- El iframe con sandbox protege contra popups -->
-    <iframe id="linkFrame" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
+    <!-- ⚠️ Sin sandbox, para que el video no lo detecte -->
+    <iframe id="linkFrame"></iframe>
   </div>
 
   <script>
-    // --- Bloqueador de popups y anuncios ---
+    // --- Bloqueador de popups y anuncios en la página contenedora ---
     (function() {
-      // Bloquear window.open en la página principal
       try {
         var originalOpen = window.open;
         window.open = function() { return null; };
         Object.defineProperty(window, 'open', { configurable: false, writable: false });
       } catch (e) {}
 
-      // Evitar que enlaces abran nuevas pestañas
       document.addEventListener('click', function(e) {
         var t = e.target;
         while (t && t.nodeName !== 'A') t = t.parentNode;
@@ -58,22 +56,20 @@
         }
       }, true);
 
-      console.log("[Visor Seguro] Bloqueador activo ✅");
+      console.log("[Visor Seguro] Protección activa ✅ (sin sandbox)");
     })();
 
-    // --- Función para obtener parámetros de la URL ---
+    // --- Obtener parámetro de URL ---
     function getParam(param) {
       var urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
     }
 
-    // --- Cargar el enlace en el iframe ---
+    // --- Cargar enlace ---
     var iframe = document.getElementById('linkFrame');
     var link = getParam("url");
 
     if (link && /^https?:\/\//i.test(link)) {
-      // Configurar sandbox seguro: evita que el iframe pueda abrir popups directos
-      iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms");
       iframe.src = link;
     } else {
       document.body.innerHTML = "<h3 style='color:red;text-align:center;'>⚠️ Enlace no válido o faltante.</h3>";
