@@ -30,20 +30,50 @@
 <body>
   <div class="container">
     <h2>Visor de Enlaces Seguro</h2>
-    <iframe id="linkFrame" sandbox="allow-same-origin allow-scripts"></iframe>
+    <!-- El iframe con sandbox protege contra popups -->
+    <iframe id="linkFrame" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
   </div>
 
   <script>
-    // Función para obtener parámetros de la URL
+    // --- Bloqueador de popups y anuncios ---
+    (function() {
+      // Bloquear window.open en la página principal
+      try {
+        var originalOpen = window.open;
+        window.open = function() { return null; };
+        Object.defineProperty(window, 'open', { configurable: false, writable: false });
+      } catch (e) {}
+
+      // Evitar que enlaces abran nuevas pestañas
+      document.addEventListener('click', function(e) {
+        var t = e.target;
+        while (t && t.nodeName !== 'A') t = t.parentNode;
+        if (t && t.tagName === 'A') {
+          var href = t.getAttribute('href') || '';
+          var target = t.getAttribute('target') || '';
+          if (target && target.toLowerCase() === '_blank') {
+            e.preventDefault();
+            window.location.href = href;
+          }
+        }
+      }, true);
+
+      console.log("[Visor Seguro] Bloqueador activo ✅");
+    })();
+
+    // --- Función para obtener parámetros de la URL ---
     function getParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
+      var urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
     }
 
-    const iframe = document.getElementById('linkFrame');
-    const link = getParam("url");
+    // --- Cargar el enlace en el iframe ---
+    var iframe = document.getElementById('linkFrame');
+    var link = getParam("url");
 
     if (link && /^https?:\/\//i.test(link)) {
+      // Configurar sandbox seguro: evita que el iframe pueda abrir popups directos
+      iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms");
       iframe.src = link;
     } else {
       document.body.innerHTML = "<h3 style='color:red;text-align:center;'>⚠️ Enlace no válido o faltante.</h3>";
