@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visor de Enlaces Seguro</title>
+  <title>Panel Generador de Enlaces</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,42 +11,78 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      background-color: #f0f0f0;
+      background-color: #222;
+      color: #fff;
     }
     .container {
       max-width: 800px;
       width: 100%;
       text-align: center;
     }
-    iframe {
+    input[type="text"] {
       width: 100%;
-      height: 600px;
-      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+      border: 1px solid #555;
+      border-radius: 4px;
+      background: #333;
+      color: #fff;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #d4af37;
+      color: black;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #b8962e;
+    }
+    .output {
       margin-top: 20px;
-      background-color: white;
+      padding: 10px;
+      background: #111;
+      border: 1px solid #555;
+      border-radius: 4px;
+      word-break: break-all;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Visor de Enlaces Seguro</h2>
-    <iframe id="linkFrame" sandbox="allow-same-origin allow-scripts"></iframe>
+    <h2>Panel Generador de Enlaces</h2>
+    <input type="text" id="originalLink" placeholder="Pega el enlace original aquí">
+    <button onclick="generateLink()">Generar Enlace Seguro</button>
+    <div id="output" class="output"></div>
   </div>
 
   <script>
-    // Función para obtener parámetros de la URL
-    function getParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
+    function generateLink() {
+      const input = document.getElementById("originalLink").value.trim();
+      const output = document.getElementById("output");
+
+      if (/^https?:\/\//i.test(input)) {
+        const encoded = encodeURIComponent(input);
+        const finalLink = `https://lzrdrz10.github.io/player.html?url=${encoded}`;
+        
+        output.innerHTML = `
+          <p>✅ Enlace generado:</p>
+          <a href="${finalLink}" target="_blank">${finalLink}</a>
+          <br><br>
+          <button onclick="copyLink('${finalLink}')">📋 Copiar</button>
+        `;
+      } else {
+        output.innerHTML = "<p style='color:red;'>⚠️ Por favor ingresa un enlace válido.</p>";
+      }
     }
 
-    const iframe = document.getElementById('linkFrame');
-    const link = getParam("url");
-
-    if (link && /^https?:\/\//i.test(link)) {
-      iframe.src = link;
-    } else {
-      document.body.innerHTML = "<h3 style='color:red;text-align:center;'>⚠️ Enlace no válido o faltante.</h3>";
+    function copyLink(link) {
+      navigator.clipboard.writeText(link).then(() => {
+        alert("Enlace copiado al portapapeles ✅");
+      });
     }
   </script>
 </body>
