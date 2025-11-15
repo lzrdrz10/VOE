@@ -3,16 +3,13 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VOE Player</title>
-
     <!-- VIDEO.JS -->
     <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
     <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
-
     <!-- QUALITY SELECTOR -->
     <link rel="stylesheet" href="quality-selector.css">
     <script src="silvermine-videojs-quality-selector.min.js"></script>
-
+    <title>Player</title>
     <style>
         /* RESET */
         * {
@@ -23,17 +20,17 @@
         body {
             overflow: hidden;
             background: #000;
-            font-family: 'Segoe UI', sans-serif;
         }
         .mainPlayer {
             width: 100% !important;
-            height: 100vh !important;
+            height: 100% !important;
             position: absolute;
         }
-
-        /* ESTILOS VIDEO.JS PERSONALIZADOS */
+        /* ============================================
+           ESTILO PLYR PARA VIDEO.JS
+        ============================================ */
         .video-js .vjs-control-bar {
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
             height: 55px;
             padding: 0 10px;
         }
@@ -45,7 +42,6 @@
         .video-js .vjs-control:hover {
             opacity: 1;
         }
-
         /* Play Button */
         .video-js .vjs-big-play-button {
             height: 80px !important;
@@ -54,13 +50,13 @@
             border: none;
             background: rgba(0, 0, 0, 0.45);
             transition: 0.25s;
-            font-size: 48px;
-            line-height: 80px;
         }
         .video-js .vjs-big-play-button:hover {
             background: rgba(255, 255, 255, 0.3);
         }
-
+        .video-js .vjs-big-play-button .vjs-icon-play:before {
+            font-size: 48px;
+        }
         /* Barra de progreso */
         .video-js .vjs-progress-holder {
             height: 6px !important;
@@ -75,7 +71,6 @@
         .video-js .vjs-load-progress div {
             background: rgba(255, 255, 255, 0.35) !important;
         }
-
         /* Volumen */
         .video-js .vjs-volume-bar {
             height: 6px !important;
@@ -85,185 +80,112 @@
             background: #ff3355 !important;
             border-radius: 20px;
         }
-
         /* Textos */
         .video-js .vjs-time-control {
             font-size: 14px;
             color: #fff;
         }
-
         /* Selector de calidad */
         .video-js .vjs-menu-button-popup .vjs-menu {
-            background: rgba(0, 0, 0, 0.9) !important;
+            background: rgba(0, 0, 0, 0.85) !important;
             border-radius: 10px;
             padding: 8px 0;
         }
         .video-js .vjs-menu li {
             color: #fff !important;
-            font-size: 14px;
         }
         .video-js .vjs-menu li.vjs-selected {
-            background: rgba(255, 51, 85, 0.3) !important;
+            background: rgba(255, 255, 255, 0.12) !important;
         }
-
         /* Spinner */
         .video-js .vjs-loading-spinner {
             border-top-color: #ff3355 !important;
             border-left-color: #ff3355 !important;
         }
-
         /* Tooltip */
         .video-js .vjs-time-tooltip {
             background: #000;
-            color: #fff;
             padding: 4px 6px;
             border-radius: 6px;
             font-size: 12px;
         }
-
-        /* Loading personalizado */
-        #loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #ff3355;
-            font-size: 18px;
-            z-index: 9999;
-            text-align: center;
-        }
-        #loading::after {
-            content: '';
-            display: block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid #333;
-            border-top: 4px solid #ff3355;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 15px auto 0;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
     </style>
 </head>
 <body>
-
-    <!-- VIDEO PLAYER -->
     <video id="my-video" class="video-js mainPlayer" controls preload="auto">
         <p class="vjs-no-js">
             Activa JavaScript para ver este video.
         </p>
     </video>
 
-    <!-- LOADING -->
-    <div id="loading">Cargando video y calidades...</div>
-
-    <!-- SCRAPING + VIDEO.JS -->
     <script>
-        // Obtener parámetro de URL
+        // Función para obtener parámetros de la URL
         function getUrlParameter(name) {
-            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-            const results = regex.exec(location.search);
-            return results === null ? '' : decodeURIComponent(results[1]);
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
 
-        const videoId = getUrlParameter('url');
+        // Obtener el ID desde la URL
+        var videoId = getUrlParameter('url');
+
+        // Validar ID
         if (!videoId || !/^\d+$/.test(videoId)) {
-            document.getElementById('loading').innerHTML = `
-                <div style="color:#f44; font-size:16px;">
-                    Error: ID inválido<br>
-                    <small>Usa: player.html?url=1234567890</small>
+            document.body.innerHTML = `
+                <div style="color:#fff; text-align:center; padding:50px; font-family:Arial; background:rgba(0,0,0,0.8); border-radius:12px; margin:20px;">
+                    <h3>Error: ID no válido</h3>
+                    <p>Usa: <code>player.html?url=1234567890</code></p>
                 </div>`;
-            throw new Error("Invalid video ID");
+            throw new Error("ID inválido");
         }
 
-        // Hacer scraping con proxy CORS
-        const okUrl = `https://ok.ru/video/${videoId}`;
-        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(okUrl)}`;
+        // Base URL del video
+        var baseUrl = "https://vd599.okcdn.ru/?expires=1763330910453&srcIp=136.243.8.89&pr=10&srcAg=CHROME_ANDROID&ms=185.226.52.101&ct=0&urls=185.226.53.99&clientType=0&id=";
 
-        fetch(proxyUrl)
-            .then(response => {
-                if (!response.ok) throw new Error("Video no encontrado o bloqueado");
-                return response.text();
-            })
-            .then(html => {
-                // Remover loading
-                document.getElementById('loading')?.remove();
+        // Mapeo de calidades (sig)
+        var sigMap = {
+            "144p": "grziXDYfhh0",
+            "240p": "8xuu_wl0N0I",
+            "360p": "FWIJtDav1Ds"
+        };
 
-                // Extraer JSON de videos
-                const videosMatch = html.match(/"videos":\s*\[(.*?)\]/s);
-                if (!videosMatch) throw new Error("No se encontraron streams de video");
+        // Generar fuentes dinámicamente
+        var fuentes = [
+            {
+                src: baseUrl + videoId + "&type=4&sig=" + sigMap["144p"],
+                type: "video/mp4",
+                label: "144p"
+            },
+            {
+                src: baseUrl + videoId + "&type=0&sig=" + sigMap["240p"],
+                type: "video/mp4",
+                label: "240p"
+            },
+            {
+                src: baseUrl + videoId + "&type=1&sig=" + sigMap["360p"],
+                type: "video/mp4",
+                label: "360p",
+                selected: true
+            }
+        ];
 
-                const videosJson = '[' + videosMatch[1] + ']';
-                const videos = JSON.parse(videosJson);
+        // Generar poster dinámico (mismo patrón que tu ejemplo)
+        var posterUrl = `https://i.okcdn.ru/videoPreview?id=${videoId}&type=32&idx=12&tkn=J3P9J3b3kIe1CDwcaM5EAC6fSoo&fn=external_8`;
 
-                // Mapear calidades
-                const qualityLabels = {
-                    '1080': '1080p', '720': '720p', '480': '480p',
-                    '360': '360p', '240': '240p', '144': '144p'
-                };
-
-                const fuentes = videos.map(v => ({
-                    src: v.url,
-                    type: 'video/mp4',
-                    label: qualityLabels[v.name] || v.name + 'p',
-                    selected: v.name === '360'
-                })).reverse(); // Mejor calidad arriba
-
-                // Extraer thumbnail
-                let poster = '';
-                const posterMatch = html.match(/"poster":"(.*?)"/);
-                if (posterMatch) {
-                    poster = posterMatch[1].replace(/\\"/g, '"').replace(/\\/g, '');
+        // Inicializar Video.js
+        var player = videojs('my-video', {
+            controlBar: {
+                skipButtons: {
+                    forward: 10,
+                    backward: 10
                 }
-
-                // Extraer título
-                const titleMatch = html.match(/<title>(.*?)</);
-                if (titleMatch) {
-                    document.title = titleMatch[1].replace(/ - OK\.RU.*/, '').trim();
-                }
-
-                // Inicializar Video.js
-                const player = videojs('my-video', {
-                    controls: true,
-                    preload: 'auto',
-                    fluid: true,
-                    poster: poster,
-                    sources: fontes,
-                    controlBar: {
-                        skipButtons: { forward: 10, backward: 10 }
-                    }
-                }, function () {
-                    this.controlBar.addChild('QualitySelector');
-                    console.log("Player listo con " + fuentes.length + " calidades");
-                });
-
-                // Error handling
-                player.on('error', function() {
-                    const error = player.error();
-                    document.body.innerHTML += `
-                        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); 
-                                    color:#f44; text-align:center; padding:20px; background:rgba(0,0,0,0.8); 
-                                    border-radius:12px; max-width:90%;">
-                            <strong>Error:</strong> ${error.message || 'No se pudo reproducir'}
-                            <br><small>ID: ${videoId}</small>
-                        </div>`;
-                });
-
-            })
-            .catch(err => {
-                document.getElementById('loading')?.remove();
-                document.body.innerHTML += `
-                    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); 
-                                color:#f44; text-align:center; padding:20px; background:rgba(0,0,0,0.8); 
-                                border-radius:12px; max-width:90%; font-size:16px;">
-                        <strong>Error:</strong> ${err.message}<br><br>
-                        <small>Asegúrate de que el ID sea correcto y el video sea público.</small>
-                    </div>`;
-                console.error("Scraping error:", err);
-            });
+            },
+            sources: fuentes,
+            poster: posterUrl
+        }, function () {
+            this.controlBar.addChild('QualitySelector');
+        });
     </script>
 </body>
 </html>
