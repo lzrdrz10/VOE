@@ -1,122 +1,210 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Enlace VOE</title>
+
+    <!-- VIDEO.JS -->
+    <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
+    <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
+
+    <!-- QUALITY SELECTOR -->
+    <link rel="stylesheet" href="quality-selector.css">
+    <script src="silvermine-videojs-quality-selector.min.js"></script>
+
+    <title>Player</title>
+
     <style>
+        /* RESET */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #0f0f0f;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .mainPlayer {
+            width: 100% !important;
+            height: 100% !important;
+            position: absolute;
+        }
+
+        /* ============================================
+           ESTILO PLYR PARA VIDEO.JS
+        ============================================ */
+
+        .video-js .vjs-control-bar {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+            height: 55px;
+            padding: 0 10px;
+        }
+
+        .video-js .vjs-control {
             color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px 20px;
+            opacity: 0.85;
+            transition: 0.2s ease;
         }
-        .container {
-            background: #1a1a1a;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
+
+        .video-js .vjs-control:hover {
+            opacity: 1;
         }
-        h1 {
-            margin-bottom: 20px;
-            color: #ff3355;
-        }
-        input {
-            width: 100%;
-            padding: 14px;
-            margin: 15px 0;
-            border: 2px solid #333;
-            border-radius: 10px;
-            background: #111;
-            color: #fff;
-            font-size: 16px;
-        }
-        input:focus {
-            outline: none;
-            border-color: #ff3355;
-        }
-        button {
-            background: #ff3355;
-            color: white;
+
+        /* Play Button */
+        .video-js .vjs-big-play-button {
+            height: 80px !important;
+            width: 80px !important;
+            border-radius: 50%;
             border: none;
-            padding: 14px 24px;
-            border-radius: 10px;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 10px 5px;
-            transition: 0.3s;
+            background: rgba(0, 0, 0, 0.45);
+            transition: 0.25s;
         }
-        button:hover {
-            background: #cc1122;
+
+        .video-js .vjs-big-play-button:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
-        .url-output {
-            background: #111;
-            padding: 14px;
-            border-radius: 10px;
-            word-break: break-all;
-            margin: 15px 0;
-            border: 1px solid #333;
-            display: none;
+
+        .video-js .vjs-big-play-button .vjs-icon-play:before {
+            font-size: 48px;
         }
-        .copy-btn {
-            background: #333;
+
+        /* Barra de progreso */
+        .video-js .vjs-progress-holder {
+            height: 6px !important;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.25);
+            margin-top: 18px;
+        }
+
+        .video-js .vjs-play-progress {
+            background: #ff3355 !important;
+            border-radius: 20px;
+        }
+
+        .video-js .vjs-load-progress div {
+            background: rgba(255, 255, 255, 0.35) !important;
+        }
+
+        /* Volumen */
+        .video-js .vjs-volume-bar {
+            height: 6px !important;
+            border-radius: 20px;
+        }
+
+        .video-js .vjs-volume-level {
+            background: #ff3355 !important;
+            border-radius: 20px;
+        }
+
+        /* Textos */
+        .video-js .vjs-time-control {
             font-size: 14px;
-            padding: 8px 16px;
+            color: #fff;
         }
-        .copy-btn:hover {
-            background: #444;
+
+        /* Selector de calidad */
+        .video-js .vjs-menu-button-popup .vjs-menu {
+            background: rgba(0, 0, 0, 0.85) !important;
+            border-radius: 10px;
+            padding: 8px 0;
+        }
+
+        .video-js .vjs-menu li {
+            color: #fff !important;
+        }
+
+        .video-js .vjs-menu li.vjs-selected {
+            background: rgba(255, 255, 255, 0.12) !important;
+        }
+
+        /* Spinner */
+        .video-js .vjs-loading-spinner {
+            border-top-color: #ff3355 !important;
+            border-left-color: #ff3355 !important;
+        }
+
+        /* Tooltip */
+        .video-js .vjs-time-tooltip {
+            background: #000;
+            padding: 4px 6px;
+            border-radius: 6px;
+            font-size: 12px;
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <h1>🎥 Generador de Enlace</h1>
-        <p>Ingresa el ID del video (ej: 2412221827833)</p>
-        
-        <input type="text" id="videoId" placeholder="Ej: 2412221827833" />
-        
-        <button onclick="generarEnlace()">Generar Enlace</button>
-        
-        <div id="urlOutput" class="url-output"></div>
-        <button onclick="copiarEnlace()" class="copy-btn" id="copyBtn" style="display:none;">Copiar Enlace</button>
-    </div>
 
-    <script>
-        function generarEnlace() {
-            const id = document.getElementById('videoId').value.trim();
-            if (!id) {
-                alert('Por favor ingresa un ID válido');
-                return;
+    <video id="my-video" class="video-js mainPlayer" controls preload="auto"
+        poster="https://i.okcdn.ru/videoPreview?id=1314649279225&type=32&idx=12&tkn=J3P9J3b3kIe1CDwcaM5EAC6fSoo&fn=external_8">
+
+        <p class="vjs-no-js">
+            Activa JavaScript para ver este video.
+        </p>
+    </video>
+
+  <script>
+    // Función para obtener parámetros de la URL
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+    // Obtener el ID desde la URL
+    var videoId = getUrlParameter('url');
+    
+    if (!videoId) {
+        document.body.innerHTML = '<div style="color:white; text-align:center; padding:50px; font-family:Arial;">Error: No se proporcionó ID de video. Usa: player.html?url=ID</div>';
+    }
+
+    // Base URL del video (ajusta según el patrón real de OK.ru)
+    var baseUrl = "https://vd599.okcdn.ru/?expires=1763330910453&srcIp=136.243.8.89&pr=10&srcAg=CHROME_ANDROID&ms=185.226.52.101&ct=0&urls=185.226.53.99&clientType=0&id=";
+    var sigMap = {
+        "144p": "grziXDYfhh0",
+        "240p": "8xuu_wl0N0I",
+        "360p": "FWIJtDav1Ds"
+    };
+
+    // Generar fuentes dinámicamente
+    var fuentes = [
+        {
+            src: baseUrl + videoId + "&type=4&sig=" + sigMap["144p"],
+            type: "video/mp4",
+            label: "144p"
+        },
+        {
+            src: baseUrl + videoId + "&type=0&sig=" + sigMap["240p"],
+            type: "video/mp4",
+            label: "240p"
+        },
+        {
+            src: baseUrl + videoId + "&type=1&sig=" + sigMap["360p"],
+            type: "video/mp4",
+            label: "360p",
+            selected: true
+        }
+    ];
+
+    // Inicializar Video.js
+    var player = videojs('my-video', {
+        controlBar: {
+            skipButtons: {
+                forward: 10,
+                backward: 10
             }
-
-            const base = window.location.origin + window.location.pathname.replace('index.html', '');
-            const url = `${base}player.html?url=${id}`;
-
-            const output = document.getElementById('urlOutput');
-            const copyBtn = document.getElementById('copyBtn');
-
-            output.textContent = url;
-            output.style.display = 'block';
-            copyBtn.style.display = 'inline-block';
-        }
-
-        function copiarEnlace() {
-            const url = document.getElementById('urlOutput').textContent;
-            navigator.clipboard.writeText(url).then(() => {
-                alert('¡Enlace copiado al portapapeles!');
-            });
-        }
-
-        // Permitir Enter en el input
-        document.getElementById('videoId').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') generarEnlace();
-        });
-    </script>
+        },
+        sources: fuentes,
+        poster: `https://i.okcdn.ru/videoPreview?id=${videoId}&type=32&idx=12&tkn=...` // Ajusta si tienes un endpoint real
+    }, function () {
+        this.controlBar.addChild('QualitySelector');
+    });
+</script>
 </body>
+
 </html>
