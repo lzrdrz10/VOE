@@ -1,89 +1,122 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel Generador de Enlaces</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background-color: #222;
-      color: #fff;
-    }
-    .container {
-      max-width: 800px;
-      width: 100%;
-      text-align: center;
-    }
-    input[type="text"] {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      font-size: 16px;
-      border: 1px solid #555;
-      border-radius: 4px;
-      background: #333;
-      color: #fff;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #d4af37;
-      color: black;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #b8962e;
-    }
-    .output {
-      margin-top: 20px;
-      padding: 10px;
-      background: #111;
-      border: 1px solid #555;
-      border-radius: 4px;
-      word-break: break-all;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Enlace VOE</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        .container {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #ff3355;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 15px 0;
+            border: 2px solid #333;
+            border-radius: 10px;
+            background: #111;
+            color: #fff;
+            font-size: 16px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #ff3355;
+        }
+        button {
+            background: #ff3355;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #cc1122;
+        }
+        .url-output {
+            background: #111;
+            padding: 14px;
+            border-radius: 10px;
+            word-break: break-all;
+            margin: 15px 0;
+            border: 1px solid #333;
+            display: none;
+        }
+        .copy-btn {
+            background: #333;
+            font-size: 14px;
+            padding: 8px 16px;
+        }
+        .copy-btn:hover {
+            background: #444;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Panel Generador</h2>
-    <input type="text" id="originalLink" placeholder="Pega el enlace original aquí">
-    <button onclick="generateLink()">Generar Enlace Seguro</button>
-    <div id="output" class="output"></div>
-  </div>
-
-  <script>
-    function generateLink() {
-      const input = document.getElementById("originalLink").value.trim();
-      const output = document.getElementById("output");
-
-      if (/^https?:\/\//i.test(input)) {
-        const encoded = encodeURIComponent(input);
-        const finalLink = `https://lzrdrz10.github.io/VOE/player.html?url=${encoded}`;
+    <div class="container">
+        <h1>🎥 Generador de Enlace</h1>
+        <p>Ingresa el ID del video (ej: 2412221827833)</p>
         
-        output.innerHTML = `
-          <p>✅ Enlace generado:</p>
-          <a href="${finalLink}" target="_blank">${finalLink}</a>
-          <br><br>
-          <button onclick="copyLink('${finalLink}')">📋 Copiar</button>
-        `;
-      } else {
-        output.innerHTML = "<p style='color:red;'>⚠️ Por favor ingresa un enlace válido.</p>";
-      }
-    }
+        <input type="text" id="videoId" placeholder="Ej: 2412221827833" />
+        
+        <button onclick="generarEnlace()">Generar Enlace</button>
+        
+        <div id="urlOutput" class="url-output"></div>
+        <button onclick="copiarEnlace()" class="copy-btn" id="copyBtn" style="display:none;">Copiar Enlace</button>
+    </div>
 
-    function copyLink(link) {
-      navigator.clipboard.writeText(link).then(() => {
-        alert("Enlace copiado al portapapeles ✅");
-      });
-    }
-  </script>
+    <script>
+        function generarEnlace() {
+            const id = document.getElementById('videoId').value.trim();
+            if (!id) {
+                alert('Por favor ingresa un ID válido');
+                return;
+            }
+
+            const base = window.location.origin + window.location.pathname.replace('index.html', '');
+            const url = `${base}player.html?url=${id}`;
+
+            const output = document.getElementById('urlOutput');
+            const copyBtn = document.getElementById('copyBtn');
+
+            output.textContent = url;
+            output.style.display = 'block';
+            copyBtn.style.display = 'inline-block';
+        }
+
+        function copiarEnlace() {
+            const url = document.getElementById('urlOutput').textContent;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('¡Enlace copiado al portapapeles!');
+            });
+        }
+
+        // Permitir Enter en el input
+        document.getElementById('videoId').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') generarEnlace();
+        });
+    </script>
 </body>
 </html>
