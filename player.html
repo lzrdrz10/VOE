@@ -12,114 +12,58 @@
     <title>Player</title>
     <style>
         /* RESET */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            overflow: hidden;
-            background: #000;
-        }
-        .mainPlayer {
-            width: 100% !important;
-            height: 100% !important;
-            position: absolute;
-        }
-        /* ============================================
-           ESTILO PLYR PARA VIDEO.JS
-        ============================================ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { overflow: hidden; background: #000; }
+        .mainPlayer { width: 100% !important; height: 100% !important; position: absolute; }
+
+        /* ESTILO PLYR PARA VIDEO.JS */
         .video-js .vjs-control-bar {
             background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
-            height: 55px;
-            padding: 0 10px;
+            height: 55px; padding: 0 10px;
         }
-        .video-js .vjs-control {
-            color: #fff;
-            opacity: 0.85;
-            transition: 0.2s ease;
-        }
-        .video-js .vjs-control:hover {
-            opacity: 1;
-        }
-        /* Play Button */
+        .video-js .vjs-control { color: #fff; opacity: 0.85; transition: 0.2s ease; }
+        .video-js .vjs-control:hover { opacity: 1; }
+
         .video-js .vjs-big-play-button {
-            height: 80px !important;
-            width: 80px !important;
-            border-radius: 50%;
-            border: none;
-            background: rgba(0, 0, 0, 0.45);
-            transition: 0.25s;
+            height: 80px !important; width: 80px !important; border-radius: 50%;
+            border: none; background: rgba(0, 0, 0, 0.45); transition: 0.25s;
         }
-        .video-js .vjs-big-play-button:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        .video-js .vjs-big-play-button .vjs-icon-play:before {
-            font-size: 48px;
-        }
-        /* Barra de progreso */
+        .video-js .vjs-big-play-button:hover { background: rgba(255, 255, 255, 0.3); }
+        .video-js .vjs-big-play-button .vjs-icon-play:before { font-size: 48px; }
+
         .video-js .vjs-progress-holder {
-            height: 6px !important;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.25);
-            margin-top: 18px;
+            height: 6px !important; border-radius: 20px;
+            background: rgba(255, 255, 255, 0.25); margin-top: 18px;
         }
-        .video-js .vjs-play-progress {
-            background: #ff3355 !important;
-            border-radius: 20px;
-        }
-        .video-js .vjs-load-progress div {
-            background: rgba(255, 255, 255, 0.35) !important;
-        }
-        /* Volumen */
-        .video-js .vjs-volume-bar {
-            height: 6px !important;
-            border-radius: 20px;
-        }
-        .video-js .vjs-volume-level {
-            background: #ff3355 !important;
-            border-radius: 20px;
-        }
-        /* Textos */
-        .video-js .vjs-time-control {
-            font-size: 14px;
-            color: #fff;
-        }
-        /* Selector de calidad */
+        .video-js .vjs-play-progress { background: #ff3355 !important; border-radius: 20px; }
+        .video-js .vjs-load-progress div { background: rgba(255, 255, 255, 0.35) !important; }
+
+        .video-js .vjs-volume-bar { height: 6px !important; border-radius: 20px; }
+        .video-js .vjs-volume-level { background: #ff3355 !important; border-radius: 20px; }
+
+        .video-js .vjs-time-control { font-size: 14px; color: #fff; }
+
         .video-js .vjs-menu-button-popup .vjs-menu {
-            background: rgba(0, 0, 0, 0.85) !important;
-            border-radius: 10px;
-            padding: 8px 0;
+            background: rgba(0, 0, 0, 0.85) !important; border-radius: 10px; padding: 8px 0;
         }
-        .video-js .vjs-menu li {
-            color: #fff !important;
-        }
-        .video-js .vjs-menu li.vjs-selected {
-            background: rgba(255, 255, 255, 0.12) !important;
-        }
-        /* Spinner */
+        .video-js .vjs-menu li { color: #fff !important; }
+        .video-js .vjs-menu li.vjs-selected { background: rgba(255, 255, 255, 0.12) !important; }
+
         .video-js .vjs-loading-spinner {
-            border-top-color: #ff3355 !important;
-            border-left-color: #ff3355 !important;
+            border-top-color: #ff3355 !important; border-left-color: #ff3355 !important;
         }
-        /* Tooltip */
         .video-js .vjs-time-tooltip {
-            background: #000;
-            padding: 4px 6px;
-            border-radius: 6px;
-            font-size: 12px;
+            background: #000; padding: 4px 6px; border-radius: 6px; font-size: 12px;
         }
     </style>
 </head>
 <body>
     <video id="my-video" class="video-js mainPlayer" controls preload="auto">
-        <p class="vjs-no-js">
-            Activa JavaScript para ver este video.
-        </p>
+        <p class="vjs-no-js">Activa JavaScript para ver este video.</p>
     </video>
 
     <script>
-        // Función para obtener parámetros de la URL
+        // Obtener ID desde URL
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
             var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -127,10 +71,8 @@
             return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
 
-        // Obtener el ID desde la URL
         var videoId = getUrlParameter('url');
 
-        // Validar ID
         if (!videoId || !/^\d+$/.test(videoId)) {
             document.body.innerHTML = `
                 <div style="color:#fff; text-align:center; padding:50px; font-family:Arial; background:rgba(0,0,0,0.8); border-radius:12px; margin:20px;">
@@ -140,51 +82,72 @@
             throw new Error("ID inválido");
         }
 
-        // Base URL del video
+        // Base URL (mismo que usas)
         var baseUrl = "https://vd599.okcdn.ru/?expires=1763330910453&srcIp=136.243.8.89&pr=10&srcAg=CHROME_ANDROID&ms=185.226.52.101&ct=0&urls=185.226.53.99&clientType=0&id=";
 
-        // Mapeo de calidades (sig)
-        var sigMap = {
-            "144p": "grziXDYfhh0",
-            "240p": "8xuu_wl0N0I",
-            "360p": "FWIJtDav1Ds"
+        // Mapeo completo de calidades
+        var qualityMap = {
+            "1080p": { type: 5, sig: null },
+            "720p":  { type: 4, sig: null },
+            "480p":  { type: 3, sig: null },
+            "360p":  { type: 1, sig: "FWIJtDav1Ds" },
+            "240p":  { type: 0, sig: "8xuu_wl0N0I" },
+            "144p":  { type: 4, sig: "grziXDYfhh0" }
         };
 
-        // Generar fuentes dinámicamente
-        var fuentes = [
-            {
-                src: baseUrl + videoId + "&type=4&sig=" + sigMap["144p"],
-                type: "video/mp4",
-                label: "144p"
-            },
-            {
-                src: baseUrl + videoId + "&type=0&sig=" + sigMap["240p"],
-                type: "video/mp4",
-                label: "240p"
-            },
-            {
-                src: baseUrl + videoId + "&type=1&sig=" + sigMap["360p"],
-                type: "video/mp4",
-                label: "360p",
-                selected: true
-            }
-        ];
+        // Generar URLs dinámicamente
+        var fuentes = [];
 
-        // Generar poster dinámico (mismo patrón que tu ejemplo)
+        // Añadir 1080p, 720p, 480p (sin sig, OK.ru los genera)
+        ['1080p', '720p', '480p'].forEach(function(label) {
+            var config = qualityMap[label];
+            var url = baseUrl + videoId + "&type=" + config.type;
+            // Intentar cargar (Video.js ignorará si no existe)
+            fuentes.push({
+                src: url,
+                type: "video/mp4",
+                label: label
+            });
+        });
+
+        // Añadir 360p, 240p, 144p (con sig)
+        ['360p', '240p', '144p'].forEach(function(label) {
+            var config = qualityMap[label];
+            var url = baseUrl + videoId + "&type=" + config.type + "&sig=" + config.sig;
+            fuentes.push({
+                src: url,
+                type: "video/mp4",
+                label: label,
+                selected: label === '360p'
+            });
+        });
+
+        // Poster dinámico
         var posterUrl = `https://i.okcdn.ru/videoPreview?id=${videoId}&type=32&idx=12&tkn=J3P9J3b3kIe1CDwcaM5EAC6fSoo&fn=external_8`;
 
         // Inicializar Video.js
         var player = videojs('my-video', {
             controlBar: {
-                skipButtons: {
-                    forward: 10,
-                    backward: 10
-                }
+                skipButtons: { forward: 10, backward: 10 }
             },
             sources: fuentes,
             poster: posterUrl
         }, function () {
             this.controlBar.addChild('QualitySelector');
+            console.log("Calidades cargadas:", fuentes.map(f => f.label).join(', '));
+        });
+
+        // Opcional: Mostrar error si ninguna fuente carga
+        player.on('error', function() {
+            var err = player.error();
+            if (err && err.code === 4) {
+                document.body.innerHTML += `
+                    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+                                color:#f44; background:rgba(0,0,0,0.8); padding:20px; border-radius:12px; text-align:center; max-width:90%;">
+                        <strong>No se pudo cargar el video</strong><br>
+                        <small>ID: ${videoId}<br>Verifica que el video exista y sea público.</small>
+                    </div>`;
+            }
         });
     </script>
 </body>
