@@ -3,274 +3,253 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trivia LZ 🍔 - Armado de Hamburguesas</title>
+<title>Trivia Lz - Crew Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0f0f1a;
-    --card: #1a1a2e;
-    --accent: #ffd700;
-    --correct: #00ff9d;
-    --wrong: #ff2e63;
-    --text: #e0e0e0;
-    --shadow: rgba(255, 215, 0, 0.2);
-  }
-  * { box-sizing: border-box; margin:0; padding:0; }
-  body {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #0f0f1a, #16213e);
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    color: var(--text);
+:root {
+    --yellow: #ffc72c;
+    --red: #da291c;
+    --dark: #1a1a1a;
+    --gray: #333;
+}
+
+body {
+    margin: 0;
+    background: linear-gradient(135deg, #da291c, #b71c1c);
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    height: 100vh;
+
+    /* Ahora permite scroll vertical */
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-  }
-  .container { width: 90%; max-width: 560px; padding: 20px 0; min-height: 100vh; }
-  .card {
-    background: var(--card);
-    padding: 32px 25px;
-    border-radius: 24px;
-    box-shadow: 0 20px 50px var(--shadow);
-    border: 2px solid rgba(255,215,0,0.2);
-    text-align: center;
-    animation: float 6s ease-in-out infinite;
-  }
-  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-  h1 { color: var(--accent); font-size: 36px; margin-bottom: 8px; text-shadow: 0 0 20px rgba(255,215,0,0.5); }
-  .subtitle { color: #bbb; font-size: 18px; margin-bottom: 30px; }
-  #home { display: block; }
-  .categorias { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-top: 30px; }
-  .categoria-btn {
-    padding: 22px 16px; background: rgba(255,215,0,0.1); border: 2px solid var(--accent);
-    border-radius: 18px; cursor: pointer; transition: all 0.4s ease; font-weight: 600;
-  }
-  .categoria-btn:hover { background: rgba(255,215,0,0.25); transform: translateY(-8px) scale(1.03); box-shadow: 0 15px 30px rgba(255,215,0,0.3); }
-  .emoji { font-size: 36px; display: block; margin-bottom: 8px; }
-  #trivia { display: none; }
-  .back-btn { color: var(--accent); text-decoration: underline; cursor: pointer; margin-bottom: 20px; }
-  .progress-container { margin: 25px 0; background: rgba(255,255,255,0.1); height: 14px; border-radius: 10px; overflow: hidden; }
-  .progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #ffd700, #ffaa00); transition: width 0.7s ease; box-shadow: 0 0 20px rgba(255,215,0,0.6); }
-  .pregunta { font-size: 21px; margin: 30px 0; line-height: 1.5; font-weight: 500; }
-  .opciones { display: flex; flex-direction: column; gap: 14px; margin: 30px 0; }
-  .opcion {
-    padding: 18px 20px; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,215,0,0.3);
-    border-radius: 50px; cursor: pointer; transition: all 0.3s ease; font-size: 17px;
-  }
-  .opcion:hover { background: rgba(255,215,0,0.15); transform: translateY(-4px); }
-  .correcta { background: var(--correct) !important; border-color: var(--correct) !important; color: black; animation: bounce 0.6s; }
-  .incorrecta { background: var(--wrong) !important; border-color: var(--wrong) !important; }
-  @keyframes bounce { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
-  #botonSiguiente { display:none; margin:20px auto 0; padding:16px 40px; background:var(--accent); color:black; font-weight:bold; font-size:18px; border:none; border-radius:50px; cursor:pointer; }
-  #botonSiguiente:hover { background:#ffea80; transform:scale(1.08); }
-  .resumen { margin-top:25px; background:rgba(0,0,0,0.3); padding:20px; border-radius:16px; max-height:500px; overflow-y:auto; text-align:left; }
-  .pregunta-resumen { margin:16px 0; padding:14px; background:rgba(255,255,255,0.05); border-radius:12px; border-left:5px solid var(--accent); }
-  .correct { color:var(--correct); font-weight:bold; }
-  .incorrect { color:var(--wrong); font-weight:bold; }
+
+    transition: transform 0.6s cubic-bezier(0.68, -0,0.32,1);
+
+    /* Permite scroll si hay mucho contenido */
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.hidden { 
+    transform: translateX(100%); 
+}
+
+h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 4rem;
+    color: var(--yellow);
+    text-shadow: 4px 4px 0 #000;
+    margin: 0 0 10px 0;
+}
+
+.button {
+    background: var(--yellow);
+    color: #000;
+    border: none;
+    padding: 18px 30px;
+    margin: 10px;
+    border-radius: 20px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 0 #b38b00;
+    transition: all 0.2s;
+    min-width: 280px;
+}
+
+.button:active {
+    transform: translateY(6px);
+    box-shadow: 0 2px 0 #b38b00;
+}
+
+.timer {
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 20px 0;
+    height: 70px;
+    color: var(--yellow);
+    text-shadow: 0 0 10px #000;
+}
+
+.timer.low { 
+    color: #ff1744; 
+    animation: pulse 0.5s infinite alternate; 
+}
+
+@keyframes pulse { 
+    from { transform: scale(1); } 
+    to { transform: scale(1.15); } 
+}
+
+.option {
+    background: var(--gray);
+    padding: 20px;
+    margin: 12px 0;
+    border-radius: 16px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: 0.3s;
+    border: 4px solid transparent;
+}
+
+.option:hover { 
+    background: #444; 
+    transform: scale(1.03); 
+}
+
+.correct { 
+    border-color: #00e676 !important; 
+    background: #004d1a !important; 
+    animation: bounce 0.6s; 
+}
+
+.incorrect { 
+    border-color: #ff1744 !important; 
+    background: #4d0000 !important; 
+}
+
+.progress {
+    height: 10px;
+    background: #444;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 20px 0;
+    width: 90%;
+}
+
+.bar {
+    height: 100%;
+    background: var(--yellow);
+    width: 0%;
+    transition: width 0.3s;
+}
+
+.confetti {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    background: var(--yellow);
+    pointer-events: none;
+    animation: confetti-fall 3s linear forwards;
+    z-index: 9999;
+}
+
+@keyframes confetti-fall {
+    to { transform: translateY(120vh) rotate(720deg); }
+}
+
+@keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+/* ───────────────────────────────
+    📱 RESPONSIVE DESIGN
+────────────────────────────────── */
+
+/* Teléfonos muy pequeños */
+@media (max-width: 380px) {
+    h1 { font-size: 2.2rem; }
+    .button {
+        padding: 14px 20px;
+        font-size: 1.1rem;
+        min-width: 200px;
+    }
+    .timer { font-size: 2.2rem; }
+    #question { font-size: 1.2rem !important; }
+    .option { font-size: 1.1rem; padding: 14px; }
+}
+
+/* Teléfonos normales */
+@media (max-width: 480px) {
+    h1 { font-size: 2.8rem; }
+    .button { font-size: 1.2rem; }
+    .option { font-size: 1.15rem; }
+    #question { font-size: 1.4rem !important; }
+}
+
+/* Tablets verticales */
+@media (max-width: 768px) {
+    h1 { font-size: 3.5rem; }
+    #question { font-size: 1.6rem !important; }
+}
+
+/* Tablets horizontales */
+@media (max-width: 1024px) {
+    h1 { font-size: 3.8rem; }
+    .button { min-width: 250px; }
+}
+
+/* Pantallas grandes */
+@media (min-width: 1600px) {
+    h1 { font-size: 5rem; }
+    .button { font-size: 1.6rem; padding: 22px 40px; }
+    .option { font-size: 1.5rem; padding: 24px; }
+    #question { font-size: 2.2rem !important; }
+}
+
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="card" id="home">
-    <h1>TRIVIA LZ 🍔</h1>
-    <p class="subtitle">Entrenamiento Oficial - Armado de Hamburguesas</p>
-    <div class="categorias">
-      <div class="categoria-btn" onclick="iniciarTrivia()">
-        <span class="emoji">🍔</span> Armado de Hamburguesas
-        <small style="display:block;margin-top:8px;opacity:0.9;font-size:14px;">+60 preguntas oficiales · Aleatorias</small>
-      </div>
-    </div>
-  </div>
 
-  <div class="card" id="trivia">
-    <div class="back-btn" onclick="volverHome()">← Volver al menú</div>
-    <h1>TRIVIA LZ</h1>
-    <p class="subtitle">Armado de Hamburguesas y Procedimientos Oficiales</p>
-    <div class="progress-container"><div class="progress-bar" id="progress"></div></div>
-    <div id="pregunta" class="pregunta"></div>
-    <div id="opciones" class="opciones"></div>
-    <button id="botonSiguiente">Siguiente →</button>
-    <div id="resultado"></div>
+<!-- PANTALLA 1: Menú principal -->
+<div id="menu" class="screen active">
+  <h1>Trivia Lz 🍔🍳</h1>
+  <p style="font-size:1.8rem;margin:30px 0;">Elige tu modo de juego</p>
+  <button class="button" onclick="goToGame('desayuno')">🍳 Solo Desayuno</button>
+  <button class="button" onclick="goToGame('huevos')">🥚 Modo Huevos</button>
+  <button class="button" onclick="goToGame('parrilla')">🔥 Modo Parrilla</button>
+  <button class="button" onclick="goToGame('tiempos')">⏳ Tiempos de Vida</button>
+  <button class="button" onclick="goToGame('procedimientos')">📘 Procedimientos</button>
+  <button class="button" onclick="showInfiniteMenu()">♾️ MODO INFINITO</button>
+</div>
+
+<!-- PANTALLA 2: Menú modo infinito -->
+<div id="infiniteMenu" class="screen hidden">
+  <h1>Modo Infinito ♾️</h1>
+  <p style="font-size:1.8rem;">¡Hasta que falles!</p>
+  <button class="button" onclick="startInfinite('facil')">😌 FÁCIL - 20 seg</button>
+  <button class="button" onclick="startInfinite('normal')">⚡ NORMAL - 12 seg</button>
+  <button class="button" onclick="startInfinite('dificil')">💀 DIFÍCIL - 8 seg</button>
+  <button class="button" style="background:#555;" onclick="backToMenu()">← Volver</button>
+</div>
+
+<!-- PANTALLA 3: Juego -->
+<div id="gameScreen" class="screen hidden">
+  <div style="width:90%;max-width:600px;text-align:center;">
+    <div class="progress"><div class="bar" id="progressBar"></div></div>
+    <div class="timer" id="timer">20</div>
+    <div id="question" style="font-size:1.8rem;margin:30px 0;font-weight:600;"></div>
+    <div id="options"></div>
+    <div style="margin-top:30px;font-size:1.4rem;" id="stats">Puntos: 0 | Récord: 0</div>
   </div>
 </div>
 
-<script>
-// === BANCO COMPLETO DE PREGUNTAS (MEZCLADAS ALEATORIAMENTE CADA VEZ) ===
-const todasLasPreguntas = [
-  // === CUARTO DE LIBRA ===
-  { pregunta: "¿Qué pan lleva el Cuarto de Libra?", opciones: ["Pan regular", "Pan Big Mac", "Pan 1/4 (blanco grande)", "Pan artesanal"], correcta: 2 },
-  { pregunta: "¿De qué peso es la carne del Cuarto de Libra?", opciones: ["10:1 (1.6 oz)", "4:1 (4 oz)", "3:1 (5.3 oz)", "2:1"], correcta: 1 },
-  { pregunta: "¿Cuántas carnes lleva el Cuarto de Libra?", opciones: ["Una carne 10:1", "Una carne 4:1", "Dos carnes 10:1", "Dos carnes 4:1"], correcta: 1 },
-  { pregunta: "¿Cuántas rebanadas de queso lleva el Cuarto de Libra?", opciones: ["1", "2", "Ninguna", "Depende"], correcta: 1 },
-  { pregunta: "¿Dónde va el queso en el Cuarto de Libra?", opciones: ["Solo en la base", "Una arriba y una abajo de la carne", "Solo en la corona", "En el medio de dos carnes"], correcta: 1 },
-  { pregunta: "¿Cuántos pepinillos lleva el Cuarto de Libra?", opciones: ["1", "2", "3", "Ninguno"], correcta: 1 },
-  { pregunta: "¿Qué salsas lleva el Cuarto de Libra?", opciones: ["Solo mayonesa", "Ketchup y mostaza", "Mayonesa y salsa Big Mac", "Solo mostaza"], correcta: 1 },
-  { pregunta: "¿Dónde se coloca la cebolla en el Cuarto de Libra?", opciones: ["Solo en la corona", "Solo en la base", "En la corona (con salsas)", "Encima del queso"], correcta: 2 },
+<!-- PANTALLA 4: Resultados -->
+<div id="resultsScreen" class="screen hidden">
+  <h1 id="resultTitle">¡Fin del juego!</h1>
+  <div id="resultContent" style="font-size:1.6rem;max-width:600px;text-align:center;"></div>
+  <button class="button" onclick="backToMenu()" style="margin-top:30px;">🔙 Volver al menú</button>
+</div>
 
-  // === BIG MAC ===
-  { pregunta: "¿Qué tipo de pan lleva el Big Mac?", opciones: ["Pan regular", "Pan 1/4", "Pan sesame Big Mac de 3 tapas", "Pan artesanal"], correcta: 2 },
-  { pregunta: "¿Cuántas carnes 10:1 lleva el Big Mac en total?", opciones: ["1", "2", "3", "4"], correcta: 1 },
-  { pregunta: "¿Cuántas rebanadas de queso lleva el Big Mac?", opciones: ["1", "2", "Ninguna", "3"], correcta: 0 },
-  { pregunta: "¿Cuánta lechuga lleva el Big Mac en total?", opciones: ["½ onza", "1 onza (½ en base + ½ en corona)", "2 onzas", "Solo en corona"], correcta: 1 },
-  { pregunta: "¿Cuántos pepinillos lleva el Big Mac en la corona?", opciones: ["1", "2", "3", "Ninguno"], correcta: 1 },
-  { pregunta: "¿Qué salsa lleva el Big Mac?", opciones: ["Mayonesa", "Salsa Big Mac", "Ketchup y mostaza", "Salsa Tasty"], correcta: 1 },
-
-  // === HAMBURGUESA / QUESOHAMBURGUESA ===
-  { pregunta: "¿Qué pan lleva la Hamburguesa y Quesohamburguesa?", opciones: ["Pan 1/4", "Pan regular", "Pan Big Mac", "Pan artesanal"], correcta: 1 },
-  { pregunta: "¿Cuántos pepinillos lleva la Hamburguesa normal?", opciones: ["0", "1", "2", "3"], correcta: 1 },
-  { pregunta: "¿La Quesohamburguesa doble lleva cuántos pepinillos?", opciones: ["1", "2", "3", "Ninguno"], correcta: 1 },
-  { pregunta: "¿En qué orden van los quesos en la Quesohamburguesa doble?", opciones: ["Queso → carne → queso → carne", "Carne → queso → carne → queso", "Ambos quesos abajo", "Ambos arriba"], correcta: 0 },
-
-  // === BIG TASTY ===
-  { pregunta: "¿Qué tipo de pan lleva el Big Tasty?", opciones: ["Pan regular", "Pan 1/4", "Pan Tasty (grande con semillas)", "Pan artesanal"], correcta: 2 },
-  { pregunta: "¿Cuántos quesos lleva en total el Big Tasty?", opciones: ["1", "2", "3", "Ninguno"], correcta: 2 },
-  { pregunta: "¿Qué salsa lleva el Big Tasty?", opciones: ["Mayonesa", "Salsa Big Mac", "Salsa Tasty ahumada", "Ketchup"], correcta: 2 },
-
-  // === MCNÍFICA ===
-  { pregunta: "¿Qué carne lleva la McNífica?", opciones: ["10:1", "4:1 (Cuarto)", "3:1", "Pollo"], correcta: 1 },
-  { pregunta: "¿Lleva tomate la McNífica?", opciones: ["No", "Sí, 1 rodaja", "Sí, 2 rodajas", "Solo si piden"], correcta: 1 },
-  { pregunta: "¿Qué salsas lleva la McNífica?", opciones: ["Solo mayonesa", "Mostaza, ketchup y mayonesa", "Solo ketchup", "Salsa Big Mac"], correcta: 1 },
-
-  // === MCPOLLO ===
-  { pregunta: "¿Qué pan lleva el McPollo?", opciones: ["Pan regular", "Pan 1/4 (mismo que Cuarto)", "Pan alargado", "Pan artesanal"], correcta: 1 },
-  { pregunta: "¿Dónde va la mayonesa en el McPollo?", opciones: ["Solo corona", "Solo base", "En ambas tapas", "No lleva"], correcta: 2 },
-
-  // === GOURMET ===
-  { pregunta: "¿Qué lechuga lleva la Gourmet Clásica y Pico Guacamole?", opciones: ["Iceberg", "Romana", "Escarola", "Mezcla"], correcta: 2 },
-  { pregunta: "¿Cuántas rodajas de tomate lleva la Gourmet Clásica?", opciones: ["1", "2", "3", "Ninguna"], correcta: 1 },
-  { pregunta: "¿Qué carne lleva la mayoría de las Gourmet?", opciones: ["10:1", "4:1", "3:1", "Pollo"], correcta: 2 },
-  { pregunta: "¿Qué lleva el Pico Guacamole Gourmet además de carne y pan?", opciones: ["Guacamole, pico de gallo, lechuga escarola, queso", "Solo guacamole", "Solo pico de gallo", "Bacon"], correcta: 0 },
-
-  // === PROCEDIMIENTOS Y REGLAS ===
-  { pregunta: "¿Cuánto dura el lavado de manos oficial?", opciones: ["10 seg", "15 seg", "20 segundos", "30 seg"], correcta: 2 },
-  { pregunta: "¿Cada cuánto mínimo debes lavarte las manos?", opciones: ["Cada 30 min", "Al menos 1 vez por hora", "Solo al ensuciarte", "Solo al llegar"], correcta: 1 },
-  { pregunta: "¿Qué hacer si un ingrediente venció su tiempo secundario?", opciones: ["Usarlo rápido", "Mezclarlo", "Desecharlo inmediatamente", "Guardarlo"], correcta: 2 },
-  { pregunta: "¿A cuánta altura se aplican las salsas?", opciones: ["½ pulgada", "1 pulgada", "2 pulgadas", "A ojo"], correcta: 1 },
-  { pregunta: "¿Cuántos productos puede tener el iniciador al mismo tiempo como máximo?", opciones: ["1", "2", "3", "Todos"], correcta: 1 },
-  { pregunta: "¿Quién borra la orden en KVS si el ensamblador termina todo?", opciones: ["Iniciador", "Ensamblador", "Gerente", "Cajero"], correcta: 1 },
-  { pregunta: "¿Cuál es el tiempo estándar de ensamblaje por sándwich?", opciones: ["15-25 seg", "35-50 segundos", "1 minuto", "No hay"], correcta: 1 },
-  { pregunta: "¿Quién pide surtido cuando falta un ingrediente?", opciones: ["Gerente", "Preparador", "Ensamblador", "Cualquiera"], correcta: 2 },
-  { pregunta: "¿Por qué usamos pinzas exclusivas para carne, pollo y huevo?", opciones: ["Estética", "Evitar contaminación cruzada y alergias", "No quemarse", "Sobraron"], correcta: 1 },
-  { pregunta: "¿Dónde se colocan los productos terminados?", opciones: ["En la mesa", "Directo al cliente", "En la OAT", "Donde quepan"], correcta: 2 }
-];
-
-// Variables del juego
-let preguntas = [];
-let indice = 0;
-let puntaje = 0;
-let respuestasUsuario = [];
-
-const home = document.getElementById("home");
-const trivia = document.getElementById("trivia");
-const preguntaEl = document.getElementById("pregunta");
-const opcionesEl = document.getElementById("opciones");
-const botonSiguiente = document.getElementById("botonSiguiente");
-const resultadoEl = document.getElementById("resultado");
-const progressBar = document.getElementById("progress");
-
-function iniciarTrivia() {
-  // Mezclar aleatoriamente y tomar solo 30 preguntas por partida
-  preguntas = todasLasPreguntas.sort(() => Math.random() - 0.5).slice(0, 30);
-  indice = 0;
-  puntaje = 0;
-  respuestasUsuario = [];
-  home.style.display = "none";
-  trivia.style.display = "block";
-  cargarPregunta();
-}
-
-function volverHome() {
-  trivia.style.display = "none";
-  home.style.display = "block";
-}
-
-function actualizarProgreso() {
-  const porcentaje = ((indice + 1) / preguntas.length) * 100;
-  progressBar.style.width = porcentaje + "%";
-}
-
-function cargarPregunta() {
-  botonSiguiente.style.display = "none";
-  opcionesEl.innerHTML = "";
-  resultadoEl.innerHTML = "";
-  const p = preguntas[indice];
-  preguntaEl.textContent = p.pregunta;
-  actualizarProgreso();
-
-  // Mezclar opciones para que la correcta no siempre esté en el mismo lugar
-  const opcionesMezcladas = p.opciones.map((texto, i) => ({texto, indice: i}))
-    .sort(() => Math.random() - 0.5);
-
-  opcionesMezcladas.forEach(item => {
-    const btn = document.createElement("div");
-    btn.classList.add("opcion");
-    btn.textContent = item.texto;
-    btn.onclick = () => seleccionarOpcion(item.indice === p.correcta, btn, item.texto);
-    opcionesEl.appendChild(btn);
-  });
-}
-
-function seleccionarOpcion(esCorrecta, elemento, textoSeleccionado) {
-  const p = preguntas[indice];
-  respuestasUsuario.push({
-    pregunta: p.pregunta,
-    tuRespuesta: textoSeleccionado,
-    respuestaCorrecta: p.opciones[p.correcta],
-    correcta: esCorrecta
-  });
-
-  if (esCorrecta) {
-    elemento.classList.add("correcta");
-    puntaje++;
-  } else {
-    elemento.classList.add("incorrecta");
-  }
-
-  Array.from(opcionesEl.children).forEach((op, i) => {
-    op.style.pointerEvents = "none";
-    if (op.textContent === p.opciones[p.correcta]) op.classList.add("correcta");
-  });
-
-  botonSiguiente.style.display = "block";
-}
-
-botonSiguiente.onclick = () => {
-  indice++;
-  if (indice < preguntas.length) {
-    cargarPregunta();
-  } else {
-    mostrarResultadoFinal();
-  }
-};
-
-function mostrarResultadoFinal() {
-  preguntaEl.style.display = "none";
-  opcionesEl.innerHTML = "";
-  botonSiguiente.style.display = "none";
-  const porcentaje = Math.round((puntaje / preguntas.length) * 100);
-  let mensaje = "";
-  if (porcentaje === 100) mensaje = "¡MAESTRO DEL ENSAMBLAJE! 100% PERFECTO";
-  else if (porcentaje >= 90) mensaje = "¡EXCELENTE! Casi perfecto";
-  else if (porcentaje >= 80) mensaje = "¡Muy bien! Dominas el procedimiento";
-  else if (porcentaje >= 70) mensaje = "¡Bien! Pero hay que repasar";
-  else mensaje = "¡A practicar más el procedimiento oficial!";
-
-  resultadoEl.innerHTML = `
-    <h2 style="color:var(--accent);font-size:30px;margin:20px 0;">${mensaje}</h2>
-    <h3>Puntaje: ${puntaje} / ${preguntas.length} (${porcentaje}%)</h3>
-    <div class="resumen">
-      <h3 style="text-align:center;color:var(--accent);margin-bottom:15px;">Resumen detallado</h3>
-      ${respuestasUsuario.map(r => `
-        <div class="pregunta-resumen">
-          <strong>${r.pregunta}</strong><br>
-          Tu respuesta: <span class="${r.correcta ? 'correct' : 'incorrect'}">${r.tuRespuesta}</span><br>
-          ${!r.correcta ? `Correcta: <span class="correct">${r.respuestaCorrecta}</span>` : ''}
-        </div>
-      `).join('')}
-    </div>
-    <button onclick="volverHome()" style="margin-top:25px;padding:16px 40px;background:var(--accent);color:black;border:none;border-radius:50px;font-size:18px;cursor:pointer;">
-      Volver al Menú
-    </button>
-  `;
-}
-</script>
+<!-- Sonidos -->
+<audio id="correct" src="https://cdn.pixabay.com/audio/2022/03/15/audio_a9e99e8791.mp3"></audio>
+<audio id="wrong" src="https://cdn.pixabay.com/audio/2022/03/15/audio_8fd1b04de1.mp3"></audio>
+<audio id="win" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3"></audio>
+<script src="script.js"></script>
 </body>
 </html>
